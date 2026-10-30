@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HabiQ – a calm habit tracker</title>
+<meta name="description" content="HabiQ is a calm habit tracker for Android. Tick off your day, grow Pip's tree, and keep your habits on your home screen. No account needed.">
+<link rel="icon" href="favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #ECEDF2;
+    --surface: #FFFFFF;
+    --surface2: #F1F2F6;
+    --border: rgba(22, 24, 31, 0.07);
+    --text: #16181F;
+    --text2: #5B6072;
+    --accent: #16181F;
+    --on-accent: #FFFFFF;
+    --leaf: #4E9A62;
+    --flame: #F0782F;
+    --shadow: 0 1px 2px rgba(22, 24, 31, 0.04), 0 8px 24px rgba(22, 24, 31, 0.06);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0D0D0E;
+      --surface: #171718;
+      --surface2: #232325;
+      --border: rgba(255, 255, 255, 0.08);
+      --text: #F2F2F3;
+      --text2: #A0A0A6;
+      --accent: #F2F2F3;
+      --on-accent: #0D0D0E;
+      --shadow: none;
+    }
+    .shot { background: #FFFFFF; }
+    .logo { filter: invert(1); }
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 20px; }
+
+  /* Top bar */
+  header { padding: 20px 0; }
+  header .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 20px; text-decoration: none; letter-spacing: -0.01em; }
+  .logo { width: 30px; height: 30px; }
+  nav { display: flex; gap: 22px; font-size: 15px; color: var(--text2); }
+  nav a { text-decoration: none; }
+  nav a:hover { color: var(--text); }
+
+  /* Hero */
+  .hero { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 40px; align-items: center; padding: 48px 0 72px; }
+  .eyebrow { font-size: 12px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text2); margin: 0 0 16px; }
+  h1 { font-size: clamp(40px, 6vw, 64px); line-height: 1.05; font-weight: 700; letter-spacing: -0.035em; margin: 0 0 20px; }
+  h1 span { font-weight: 300; }
+  .lead { font-size: 19px; color: var(--text2); max-width: 30em; margin: 0 0 32px; }
+  .actions { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+  .btn { display: inline-flex; align-items: center; gap: 10px; padding: 14px 22px; border-radius: 14px; font-weight: 600; font-size: 16px; text-decoration: none; }
+  .btn-primary { background: var(--accent); color: var(--on-accent); }
+  .btn-primary:hover { opacity: 0.88; }
+  .btn-quiet { color: var(--text2); }
+  .btn-quiet:hover { color: var(--text); }
+  .note { font-size: 13px; color: var(--text2); margin-top: 14px; }
+
+  .hero-card { position: relative; background: var(--surface); border: 1px solid var(--border); border-radius: 28px; padding: 28px; box-shadow: var(--shadow); }
+  .hero-card .pip { width: 150px; display: block; margin: -96px auto 4px; }
+  .stat-row { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 18px; }
+  .stat-label { font-size: 11px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text2); }
+  .stat-big { font-size: 56px; font-weight: 300; letter-spacing: -0.04em; line-height: 1; }
+  .chip { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; background: var(--surface2); font-weight: 600; font-size: 14px; }
+  .chip i { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+  .bar { height: 3px; background: var(--surface2); border-radius: 2px; overflow: hidden; margin-bottom: 18px; }
+  .bar div { width: 75%; height: 100%; background: var(--accent); }
+  .habit { display: flex; align-items: center; gap: 14px; padding: 12px 0; border-top: 1px solid var(--border); }
+  .habit-icon { width: 40px; height: 40px; border-radius: 12px; background: var(--surface2); display: grid; place-items: center; flex: none; }
+  .habit-name { font-weight: 600; }
+  .habit-sub { font-size: 14px; color: var(--text2); }
+  .tick { margin-left: auto; width: 40px; height: 40px; border-radius: 50%; border: 2.5px solid var(--surface2); display: grid; place-items: center; flex: none; font-weight: 700; font-size: 14px; }
+  .tick.done { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+
+  /* Sections */
+  section { padding: 64px 0; }
+  h2 { font-size: clamp(28px, 4vw, 40px); letter-spacing: -0.03em; line-height: 1.15; margin: 0 0 12px; }
+  .section-lead { color: var(--text2); font-size: 17px; max-width: 34em; margin: 0 0 36px; }
+
+  .features { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .feature { background: var(--surface); border: 1px solid var(--border); border-radius: 22px; padding: 24px; box-shadow: var(--shadow); }
+  .feature .num { font-size: 13px; font-weight: 600; color: var(--text2); letter-spacing: 0.1em; }
+  .feature h3 { margin: 10px 0 6px; font-size: 18px; letter-spacing: -0.01em; }
+  .feature p { margin: 0; color: var(--text2); font-size: 15px; }
+
+  .widgets { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start; }
+  .shot { margin: 0; background: var(--surface); border: 1px solid var(--border); border-radius: 22px; padding: 16px; box-shadow: var(--shadow); }
+  .shot img { width: 100%; display: block; border-radius: 12px; }
+  .shot figcaption { color: #5B6072; font-size: 14px; padding: 12px 4px 2px; }
+  .stack { display: grid; gap: 16px; }
+
+  .pip-band { display: grid; grid-template-columns: 200px 1fr; gap: 36px; align-items: center; background: var(--surface); border: 1px solid var(--border); border-radius: 28px; padding: 36px; box-shadow: var(--shadow); }
+  .pip-band img { width: 100%; }
+  .stages { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+
+  .privacy { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .privacy .feature h3 { margin-top: 0; }
+
+  footer { padding: 40px 0 56px; color: var(--text2); font-size: 14px; }
+  footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 16px; border-top: 1px solid var(--border); padding-top: 28px; }
+  footer nav { gap: 18px; font-size: 14px; }
+
+  @media (max-width: 860px) {
+    .hero { grid-template-columns: 1fr; padding-top: 24px; gap: 96px; }
+    .features, .privacy { grid-template-columns: 1fr 1fr; }
+    .widgets { grid-template-columns: 1fr; }
+    .pip-band { grid-template-columns: 1fr; text-align: left; padding: 28px; }
+    .pip-band img { width: 150px; }
+  }
+  @media (max-width: 560px) {
+    nav.top { display: none; }
+    .features, .privacy { grid-template-columns: 1fr; }
+    section { padding: 48px 0; }
+    .hero-card { padding: 22px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <a class="brand" href="#"><img class="logo" src="img/logo.png" alt="">HabiQ</a>
+    <nav class="top">
+      <a href="#features">Features</a>
+      <a href="#widgets">Widgets</a>
+      <a href="#privacy">Privacy</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <div class="hero">
+      <div>
+        <p class="eyebrow">Habit tracker for Android</p>
+        <h1>Small steps,<br><span>every day.</span></h1>
+        <p class="lead">HabiQ keeps your habits simple: tick off your day, watch your streaks grow, and let Pip the penguin cheer you on. No account, no clutter.</p>
+        <div class="actions">
+          <a class="btn btn-primary" href="https://play.google.com/store/apps/details?id=com.habiq.app">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4 2.5v19l15-9.5z"/></svg>
+            Get it on Google Play
+          </a>
+          <a class="btn btn-quiet" href="#features">See what it does →</a>
+        </div>
+        <p class="note">Free · Android · English, हिन्दी, தமிழ்</p>
+      </div>
+
+      <div class="hero-card" aria-label="A preview of the Today screen">
+        <img class="pip" src="img/pip-wave.svg" alt="Pip the penguin waving">
+        <div class="stat-row">
+          <div>
+            <div class="stat-label">Today</div>
+            <div class="stat-big">3/4</div>
+          </div>
+          <span class="chip"><i style="background: var(--flame)"></i>12 days</span>
+        </div>
+        <div class="bar"><div></div></div>
+        <div class="habit">
+          <div class="habit-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#345CA0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"/></svg></div>
+          <div><div class="habit-name">Drink water</div><div class="habit-sub">8 of 8 glasses</div></div>
+          <div class="tick done">✓</div>
+        </div>
+        <div class="habit">
+          <div class="habit-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#5B4A9A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></div>
+          <div><div class="habit-name">Read</div><div class="habit-sub">6 of 10 pages</div></div>
+          <div class="tick">+1</div>
+        </div>
+        <div class="habit">
+          <div class="habit-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2F6B45" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13" cy="4" r="2"/><path d="M7 21l3-6 3 2v4"/><path d="M10 15l1-6 4 3 3 1"/><path d="M7 11l4-2"/></svg></div>
+          <div><div class="habit-name">Go for a walk</div><div class="habit-sub">Done today</div></div>
+          <div class="tick done">✓</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <section id="features">
+    <div class="wrap">
+      <p class="eyebrow">What's inside</p>
+      <h2>Everything a habit needs. Nothing it doesn't.</h2>
+      <p class="section-lead">Build habits that fit your day, whether that's a glass of water eight times or a run three times a week.</p>
+      <div class="features">
+        <div class="feature"><div class="num">01</div><h3>Your day at a glance</h3><p>Today groups habits by morning, afternoon and evening. One tap ticks a habit or adds a step.</p></div>
+        <div class="feature"><div class="num">02</div><h3>Counts and goals</h3><p>Track yes/no habits or amounts like glasses, pages and minutes, daily or a few times a week.</p></div>
+        <div class="feature"><div class="num">03</div><h3>Streaks and history</h3><p>See your streak, your best run and a heatmap of every day, so progress is easy to spot.</p></div>
+        <div class="feature"><div class="num">04</div><h3>Reminders that work</h3><p>Gentle notifications, or a full alarm for habits you really can't skip.</p></div>
+        <div class="feature"><div class="num">05</div><h3>Home screen widgets</h3><p>Log habits without opening the app: today's list, quick-log buttons, rings, heatmaps and more.</p></div>
+        <div class="feature"><div class="num">06</div><h3>Looks the way you like</h3><p>Calm themes in light and dark, in English, Hindi and Tamil.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="widgets">
+    <div class="wrap">
+      <p class="eyebrow">Widgets</p>
+      <h2>Log from your home screen.</h2>
+      <p class="section-lead">Pick the widgets you like and tap to log. They update the moment you do.</p>
+      <div class="widgets">
+        <figure class="shot"><img src="img/today.png" alt="Today widget listing habits with +1 and tick buttons" loading="lazy"><figcaption>Today: every habit due, with a button for each.</figcaption></figure>
+        <div class="stack">
+          <figure class="shot"><img src="img/heatmap.png" alt="Heatmap widget showing 90 days of one habit" loading="lazy"><figcaption>Heatmap: one habit over the last 90 days.</figcaption></figure>
+          <figure class="shot"><img src="img/quicklog.png" alt="Quick log widget with round buttons" loading="lazy"><figcaption>Quick log: one tap per habit.</figcaption></figure>
+          <figure class="shot"><img src="img/treeweek.png" alt="Pip's tree and the week widget" loading="lazy"><figcaption>Pip's tree + week: your leaves, streak and week.</figcaption></figure>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="pip">
+    <div class="wrap">
+      <div class="pip-band">
+        <img src="img/pip.svg" alt="Pip the penguin smiling">
+        <div>
+          <p class="eyebrow">Meet Pip</p>
+          <h2>A little penguin who grows with you.</h2>
+          <p class="section-lead" style="margin-bottom: 0">Every habit you tick adds a leaf to Pip's tree. Pip hatches, grows and celebrates your streaks, and is kind on the days you miss.</p>
+          <div class="stages">
+            <span class="chip"><i style="background: var(--leaf)"></i>Leaves for every tick</span>
+            <span class="chip"><i style="background: var(--flame)"></i>Streak milestones</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="privacy">
+    <div class="wrap">
+      <p class="eyebrow">Privacy</p>
+      <h2>Your habits stay yours.</h2>
+      <p class="section-lead">HabiQ has no account and no servers. We never see your data.</p>
+      <div class="privacy">
+        <div class="feature"><h3>On your phone</h3><p>Habits and history are stored on your device. No sign-up, no ads, no tracking.</p></div>
+        <div class="feature"><h3>Your own Google Drive</h3><p>Optional backup goes to a private folder in your own Drive that only HabiQ can open.</p></div>
+        <div class="feature"><h3>Export any time</h3><p>Save a backup file or a spreadsheet and take your data wherever you like.</p></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 HabiQ</span>
+    <nav>
+      <a href="https://saravanarajur.github.io/habiq-policy/">Privacy policy</a>
+      <a href="https://play.google.com/store/apps/details?id=com.habiq.app">Google Play</a>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>
